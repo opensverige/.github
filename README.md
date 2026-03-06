@@ -19,7 +19,7 @@ Här i org:en bygger vi tillsammans — och denna repo (`.github`) är **navet**
 - **`workflows/`** — t.ex. Discord-notiser när agent-specs uppdateras.
 - **[CONTRIBUTING.md](CONTRIBUTING.md)** — hur du bidrar med förändringar och diskuterar förbättringar.
 
-**Första projektet:** Vi bygger en bra AI-agent för vår Discord — eget repo (länk läggs in när det finns).
+**Första projektet:** Vi bygger en bra AI-agent för vår Discord — [discord-agent](https://github.com/opensverige/discord-agent). Eget repo; bygg och pusha fritt (invit till org → [Discord](https://www.opensverige.se/)).
 
 **Kör själv:** Agent-strukturen är öppen så att communityt kan använda och bygga vidare. Klona och kör på egen maskin (t.ex. Mac mini 24/7) med **egna API-nycklar** — inga nycklar, tokens eller hemligheter committas i detta repo.
 
