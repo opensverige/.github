@@ -1,0 +1,75 @@
+# Discord-Sync — notis till Discord när agent-specs uppdateras
+# OpenSverige · vibecode style
+
+name: Discord-Sync
+
+on:
+  push:
+    branches: [main, master]
+    paths:
+      - 'agent-infra/**'
+      - 'agent-specs/**'
+      - 'manifesto.md'
+      - 'README.md'
+      - 'AGENT.md'
+      - 'CONTRIBUTING.md'
+  pull_request:
+    branches: [main, master]
+    paths:
+      - 'agent-infra/**'
+      - 'agent-specs/**'
+      - 'manifesto.md'
+      - 'README.md'
+      - 'AGENT.md'
+      - 'CONTRIBUTING.md'
+
+jobs:
+  notify:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Notify Discord
+        env:
+          DISCORD_WEBHOOK_URL: ${{ secrets.DISCORD_WEBHOOK_URL }}
+        run: |
+          if [ -z "$DISCORD_WEBHOOK_URL" ]; then
+            echo "DISCORD_WEBHOOK_URL not set — skipping notification"
+            exit 0
+          fi
+          EVENT="${{ github.event_name }}"
+          REPO="${{ github.repository }}"
+          ACTOR="${{ github.actor }}"
+          REF="${{ github.ref_name }}"
+          SHA="${{ github.sha }}"
+          SHORT_SHA="${SHA:0:7}"
+          COMPARE="${{ github.event.compare }}"
+          if [ "$EVENT" = "pull_request" ]; then
+            TITLE="${{ github.event.pull_request.title }}"
+            URL="${{ github.event.pull_request.html_url }}"
+            BODY="PR: **${TITLE}**"
+          else
+            COMMIT_MSG="${{ github.event.head_commit.message }}"
+            URL="${COMPARE:-https://github.com/${REPO}/commit/${SHA}}"
+            BODY="Commit: **${COMMIT_MSG}**"
+          fi
+          PAYLOAD=$(cat <<EOF
+          {
+            "content": null,
+            "embeds": [{
+              "title": "Agent-specs uppdaterade",
+              "description": "${BODY}",
+              "color": 3447003,
+              "fields": [
+                { "name": "Repo", "value": "${REPO}", "inline": true },
+                { "name": "Branch", "value": "${REF}", "inline": true },
+                { "name": "By", "value": "${ACTOR}", "inline": true },
+                { "name": "Commit", "value": "[${SHORT_SHA}](${URL})", "inline": false }
+              ],
+              "footer": { "text": "OpenSverige · GitHub Actions" }
+            }]
+          }
+          EOF
+          )
+          curl -s -S -X POST "$DISCORD_WEBHOOK_URL" \
+            -H "Content-Type: application/json" \
+            -d "$PAYLOAD"
+        if: always()

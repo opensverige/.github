@@ -1,0 +1,8 @@
+blank_issues_enabled: true
+contact_links:
+  - name: OpenSverige (Discord, IRL, community)
+    url: https://www.opensverige.se/
+    about: Discord, IRL-sessioner och alla community-länkar
+  - name: OpenSverige discussions
+    url: https://github.com/orgs/OPENSVERIGE_ORG/discussions
+    about: Öppna diskussioner och idéer för hela org:en
